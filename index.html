@@ -751,7 +751,77 @@ h2:before{height:1em}
 #rankings .rg-teaser-action:focus-visible{outline:3px solid #7bb2ff;outline-offset:3px}
 @media(max-width:760px){#rankings .rg-scoring-teaser{padding:18px 15px 19px}#rankings .rg-teaser-families{grid-template-columns:1fr;gap:10px}#rankings .rg-teaser-family{min-height:82px;padding:13px 15px}#rankings .rg-teaser-copy p{font-size:17px;line-height:1.58}#rankings .rg-teaser-family strong{font-size:18px}#rankings .rg-teaser-count{font-size:38px}#rankings .rg-teaser-action{width:100%;font-size:16px}}
 @media(prefers-reduced-motion:reduce){#rankings .rg-teaser-action{transition:none;transform:none!important}}
-</style><style>#key-findings{scroll-margin-top:20px}</style></head><body><div class="shell"><nav aria-label="Jump to a section" class="jump" id="page-top"><a href="#key-findings">Key Findings</a><a href="#top-five-nfl">Top 5 NFL</a><a href="#top-five-nba">Top 5 NBA</a><a href="#top-five-mlb">Top 5 MLB</a><a href="#top-five-nhl">Top 5 NHL</a><a href="#full">Full Rankings</a><a href="#methodology">Methodology</a></nav><main><section id="rankings"><div aria-label="Study statistics" class="statstrip stats-above-ranking study-snapshot"><div class="snapshot-heading"><span class="snapshot-kicker">The Study in Numbers</span><span class="snapshot-subtitle">A snapshot of the research behind the rankings</span></div><div class="snapshot-grid"><div class="snapshot-card"><strong aria-label="124" class="snapshot-value" data-count="124">124</strong><span class="snapshot-stat-label">Coaches Analyzed</span><span class="snapshot-note">coach profiles</span><span aria-hidden="true" class="snapshot-rail"></span></div><div class="snapshot-card"><strong aria-label="4" class="snapshot-value" data-count="4">4</strong><span class="snapshot-stat-label">Major Leagues</span><span class="snapshot-note">NFL · NBA · MLB · NHL</span><span aria-hidden="true" class="snapshot-rail"></span></div><div class="snapshot-card"><strong aria-label="372" class="snapshot-value" data-count="372">372</strong><span class="snapshot-stat-label">Image Assessments</span><span class="snapshot-note" title="Three separate photographs were assessed for each coach. The dataset does not specify a consistent front, left and right sequence.">3 photos per coach</span><span aria-hidden="true" class="snapshot-rail"></span></div></div></div><aside class="rg-scoring-teaser" aria-labelledby="rgScoringTeaserTitle">
+</style><style>#key-findings{scroll-margin-top:20px}</style>
+<style>
+/* Four cohesive statistics across a single desktop row. Compact but readable. */
+#rankings .study-snapshot .snapshot-grid{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  background:#fff;
+}
+#rankings .study-snapshot .snapshot-card{
+  min-width:0;
+  min-height:165px;
+  padding:22px clamp(13px,1.8vw,25px) 25px!important;
+  border-bottom:0;
+  border-right:1px solid #e1e8f1;
+}
+#rankings .study-snapshot .snapshot-card:last-child{border-right:0}
+#rankings .study-snapshot .snapshot-card:after{width:91px;height:91px;right:-43px;top:-41px}
+#rankings .study-snapshot .snapshot-value{
+  margin:0 0 6px!important;
+  font:900 clamp(37px,4.4vw,59px)/1 Arial,Helvetica,sans-serif!important;
+  letter-spacing:-.055em;
+  color:#1c63d3;
+}
+#rankings .study-snapshot .snapshot-stat-label{
+  font:900 clamp(15px,1.42vw,20px)/1.25 Arial,Helvetica,sans-serif!important;
+  letter-spacing:-.012em;
+  color:#162435;
+}
+#rankings .study-snapshot .snapshot-note{
+  font:400 clamp(13px,1.2vw,16px)/1.45 Arial,Helvetica,sans-serif!important;
+  margin-top:6px;
+  max-width:none;
+  color:#536a7f;
+}
+#rankings .study-snapshot .snapshot-card:nth-child(4) .snapshot-rail:after{
+  transition-delay:.44s;
+}
+#rankings .study-snapshot .snapshot-verify-note{
+  margin:0;
+  padding:8px 16px 10px;
+  border-top:1px solid #e6edf5;
+  background:#fbfcff;
+  color:#63768a;
+  font:400 12px/1.45 Arial,Helvetica,sans-serif;
+}
+@media(max-width:740px){
+  #rankings .study-snapshot .snapshot-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  #rankings .study-snapshot .snapshot-card{
+    min-height:150px;
+    padding:18px 15px 24px!important;
+    border-bottom:1px solid #e1e8f1;
+  }
+  #rankings .study-snapshot .snapshot-card:nth-child(even){border-right:0}
+  #rankings .study-snapshot .snapshot-card:nth-child(n+3){border-bottom:0}
+  #rankings .study-snapshot .snapshot-value{font-size:clamp(36px,9vw,45px)!important}
+  #rankings .study-snapshot .snapshot-stat-label{font-size:16px!important}
+  #rankings .study-snapshot .snapshot-note{font-size:14px!important}
+}
+@media(max-width:380px){
+  #rankings .study-snapshot .snapshot-card{padding:17px 11px 23px!important}
+  #rankings .study-snapshot .snapshot-stat-label{font-size:15px!important}
+  #rankings .study-snapshot .snapshot-note{font-size:13px!important}
+  #rankings .study-snapshot .snapshot-verify-note{font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){
+  #rankings .study-snapshot .snapshot-rail:after{transition:none!important}
+}
+</style>
+</head><body><div class="shell"><nav aria-label="Jump to a section" class="jump" id="page-top"><a href="#key-findings">Key Findings</a><a href="#top-five-nfl">Top 5 NFL</a><a href="#top-five-nba">Top 5 NBA</a><a href="#top-five-mlb">Top 5 MLB</a><a href="#top-five-nhl">Top 5 NHL</a><a href="#full">Full Rankings</a><a href="#methodology">Methodology</a></nav><main><section id="rankings"><div aria-label="Study statistics" class="statstrip stats-above-ranking study-snapshot"><div class="snapshot-heading"><span class="snapshot-kicker">The Study in Numbers</span><span class="snapshot-subtitle">A snapshot of the research behind the rankings</span></div><div class="snapshot-grid"><div class="snapshot-card"><strong aria-label="124" class="snapshot-value" data-count="124">124</strong><span class="snapshot-stat-label">Coaches Analyzed</span><span class="snapshot-note">coach profiles</span><span aria-hidden="true" class="snapshot-rail"></span></div><div class="snapshot-card"><strong aria-label="4" class="snapshot-value" data-count="4">4</strong><span class="snapshot-stat-label">Major Leagues</span><span class="snapshot-note">NFL · NBA · MLB · NHL</span><span aria-hidden="true" class="snapshot-rail"></span></div><div class="snapshot-card"><strong aria-label="372" class="snapshot-value" data-count="372">372</strong><span class="snapshot-stat-label">Image Assessments</span><span class="snapshot-note" title="Three separate photographs were assessed for each coach. The dataset does not specify a consistent front, left and right sequence.">3 photos per coach</span><span aria-hidden="true" class="snapshot-rail"></span></div><div class="snapshot-card snapshot-landmarks"><strong aria-label="468" class="snapshot-value" data-count="468">468</strong><span class="snapshot-stat-label">Facial Landmarks</span><span class="snapshot-note">Standard Face Mesh points*</span><span aria-hidden="true" class="snapshot-rail"></span></div></div><p class="snapshot-verify-note">*468 is the standard MediaPipe Face Mesh landmark count. Confirm the same model was used in this study before publishing.</p></div><aside class="rg-scoring-teaser" aria-labelledby="rgScoringTeaserTitle">
   <div class="rg-teaser-copy">
     <span class="rg-teaser-kicker">How the Scores Are Measured</span>
     <h3 id="rgScoringTeaserTitle">Six Measurements. Two Score Families.</h3>
