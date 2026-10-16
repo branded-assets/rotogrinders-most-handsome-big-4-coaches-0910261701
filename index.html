@@ -1144,6 +1144,7 @@ function table(){
 }
 document.querySelectorAll('[data-sort]').forEach(b=>b.onclick=()=>{let k=b.dataset.sort;desc=sort===k?!desc:(k==='score'||k.startsWith('metric'));sort=k;table()});document.getElementById('search').oninput=()=>{limit=30;table()};document.getElementById('filter').onchange=()=>{limit=30;table()};document.getElementById('more').onclick=()=>{limit+=30;table()};bars();table();observeBars();
 </script><script>
+/* Standalone PNG styling is intentionally isolated from the live rankings widget. */
 (function () {
   const button = document.getElementById('downloadRankings');
   if (!button) return;
@@ -1153,82 +1154,110 @@ document.querySelectorAll('[data-sort]').forEach(b=>b.onclick=()=>{let k=b.datas
     button.disabled = true;
     label.textContent = 'Preparing PNG…';
     try {
-      const W = 1280, SCALE = 2, H = 1296;
+      // Keep export layout independent of the on-page tabs, study snapshot and CSS.
+      const W = 1280, SCALE = 2;
+      const tab = active;
+      const leagueRows = ranked(tab);
+      const rows = leagueRows.slice(0, 10);
+      const coachCount = leagueRows.length;
+      const imagesAssessed = coachCount * 3;
+      const color = {Overall:'#2879fe',NFL:'#2563eb',NBA:'#d97736',MLB:'#168a7a',NHL:'#8056b5'};
+      const accent = color[tab] || color.Overall;
+      const isOverall = tab === 'Overall';
+      const mastH = 169, modelY = 191, modelH = 54, headY = 260, headH = 45;
+      const rowY = headY + headH, rowH = 73, footY = rowY + rows.length * rowH + 18;
+      const H = footY + 90;
       const canvas = document.createElement('canvas');
       canvas.width = W * SCALE;
       canvas.height = H * SCALE;
       const ctx = canvas.getContext('2d');
       if (!ctx) throw new Error('Canvas is not available in this browser');
-      ctx.scale(SCALE,SCALE);
-      const color = {Overall:'#2879fe',NFL:'#2563eb',NBA:'#d97736',MLB:'#168a7a',NHL:'#8056b5'};
-      const tab = active;
-      const rows = ranked(tab).slice(0,10);
+      ctx.scale(SCALE, SCALE);
       const fill = (x,y,w,h,c) => {ctx.fillStyle=c;ctx.fillRect(x,y,w,h)};
       const txt = (t,x,y,size=20,c='#101820',weight=400,align='left') => {
         ctx.font = `${weight} ${size}px Arial, Helvetica, sans-serif`;
-        ctx.textAlign=align; ctx.textBaseline='alphabetic';ctx.fillStyle=c;ctx.fillText(t,x,y);
+        ctx.textAlign=align;ctx.textBaseline='alphabetic';ctx.fillStyle=c;
+        ctx.fillText(String(t),x,y);
       };
-      const line = (x1,y1,x2,y2,c='#dae3ed',weight=1)=>{ctx.beginPath();ctx.strokeStyle=c;ctx.lineWidth=weight;ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke()};
+      const line = (x1,y1,x2,y2,c='#dae3ed',weight=1) => {
+        ctx.beginPath();ctx.strokeStyle=c;ctx.lineWidth=weight;
+        ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+      };
       fill(0,0,W,H,'#ffffff');
-      // RotoGrinders navy masthead
-      const g=ctx.createLinearGradient(0,0,W,0);g.addColorStop(0,'#0c1118');g.addColorStop(.65,'#17283b');g.addColorStop(1,'#123454');fill(0,0,W,174,g);
-      fill(42,27,214,27,'#2879fe');txt('RotoGrinders Research',53,46,13,'#ffffff',800);
-      txt('Big Four Coach Rankings',42,104,40,'#ffffff',900);
-      txt('Top 10 coaches by model score  |  '+(tab==='Overall'?'Across all four leagues':tab+' leaders'),42,139,17,'#cbd9e8');
-      txt('Roto',1192,43,18,'#ffffff',900,'right');txt('Grinders',1192,67,18,'#81bcff',900,'right');
-      fill(0,174,W,5,'#2879fe');
-      // Study snapshot in the PNG mirrors the premium branded metric strip on the page.
-      fill(42,198,1196,23,'#101820');fill(42,221,1196,3,'#2879fe');
-      fill(52,207,6,6,'#4c98ff');txt('The Study in Numbers',66,215,12,'#ffffff',900);
-      const stats=[['124','Coaches analyzed','Coach profiles'],['4','Major leagues','NFL · NBA · MLB · NHL'],['372','Image assessments','3 photographs per coach']];
-      stats.forEach((item,i)=>{
-        const x=42+i*400;
-        fill(x,225,386,66,i%2?'#f5f8fd':'#ffffff');
-        line(x,225,x,291,'#d7e2ed');line(x+386,225,x+386,291,'#d7e2ed');
-        fill(x,287,386,4,'#2879fe');
-        txt(item[0],x+15,264,33,'#2563eb',900);
-        txt(item[1],x+106,259,16,'#162435',800);
-        txt(item[2],x+107,280,12,'#627487',400);
-      });
-      // Selected tab and explanation strip
-      txt('Selected league',42,327,15,'#607286',700);
-      let x=206;
-      ['Overall','NFL','NBA','MLB','NHL'].forEach(l=>{const w=l==='Overall'?112:84;fill(x,307,w,38,l===tab?'#101820':'#f1f5fa');txt(l,x+w/2,332,16,l===tab?'#ffffff':'#3a4d61',700,'center');x+=w+7});
-      fill(42,355,1196,54,'#101820');fill(42,355,5,54,'#2879fe');txt('Model scores / 10',62,378,16,'#a9cbff',800);txt('Higher scores indicate closer alignment with the study\'s facial-proportion model.',254,378,15,'#e2eaf4');
-      txt('Rank / Coach',65,448,15,'#ffffff',800);txt('Model Score',648,448,15,'#ffffff',800);txt('Score /10',1157,448,15,'#ffffff',800,'right');
-      fill(42,419,1196,44,'#101820');
-      // Repaint heading after the dark background
-      txt('Rank / Coach',65,448,15,'#ffffff',800);txt('Model Score',648,448,15,'#ffffff',800);txt('Score /10',1157,448,15,'#ffffff',800,'right');
-      const y0=463,rowH=73;
-      rows.forEach((r,i)=>{
-        const y=y0+i*rowH;
+
+      // Compact, selected-league-only headline; no full-study statistics or inactive tabs.
+      const background = ctx.createLinearGradient(0,0,W,0);
+      background.addColorStop(0,'#0c1118');background.addColorStop(.65,'#17283b');
+      background.addColorStop(1,'#123454');
+      fill(0,0,W,mastH,background);
+      fill(42,27,214,27,'#2879fe');
+      txt('RotoGrinders Research',53,46,13,'#ffffff',800);
+
+      // Draw both wordmark segments on one baseline with measured width, never as two lines.
+      const wordmarkFont = '900 21px Arial, Helvetica, sans-serif';
+      ctx.font = wordmarkFont;
+      const rotoWidth = ctx.measureText('Roto').width;
+      const grindersWidth = ctx.measureText('Grinders').width;
+      const logoX = W - 43 - rotoWidth - grindersWidth;
+      txt('Roto',logoX,48,21,'#ffffff',900);
+      txt('Grinders',logoX+rotoWidth,48,21,'#81bcff',900);
+
+      txt(isOverall?'Big Four Coach Rankings':`${tab} Coach Rankings`,42,106,42,'#ffffff',900);
+      txt(isOverall
+        ? `Top 10 of ${coachCount} coaches across the NFL, NBA, MLB and NHL`
+        : `Top 10 of ${coachCount} ${tab} coaches analyzed  |  3 photographs per coach`,
+        42,141,17,'#cbd9e8');
+      fill(0,mastH,W,5,accent);
+
+      // One concise explanation replaces the stats strip and five-league selector.
+      fill(42,modelY,1196,modelH,'#101820');
+      fill(42,modelY,5,modelH,accent);
+      txt('Model scores / 10',62,modelY+33,17,'#a9cbff',800);
+      txt('Higher scores indicate closer alignment with the study\'s facial-proportion model.',
+        254,modelY+33,15,'#e2eaf4');
+
+      // Retain the familiar ranked rows, model-score bars and score chips.
+      fill(42,headY,1196,headH,'#101820');
+      txt('Rank / Coach',65,headY+29,15,'#ffffff',800);
+      txt('Model Score',648,headY+29,15,'#ffffff',800);
+      txt('Score / 10',1157,headY+29,15,'#ffffff',800,'right');
+      rows.forEach((r,i) => {
+        const y = rowY + i * rowH;
         fill(42,y,1196,rowH,i%2?'#f5f8fc':'#ffffff');
         line(42,y+rowH,1238,y+rowH,'#dce6ef');
-        const rc=color[r.league]||color.Overall;
-        fill(59,y+18,32,32,'#101820');txt(String(i+1),75,y+41,17,'#ffffff',800,'center');
+        const rc = color[r.league] || accent;
+        fill(59,y+18,32,32,'#101820');
+        txt(String(i+1),75,y+41,17,'#ffffff',800,'center');
         txt(r.name,107,y+30,19,'#101820',800);
-        txt(r.team+(tab==='Overall'?'  ·  '+r.league:''),107,y+53,14,'#66798d');
+        txt(r.team+(isOverall?'  ·  '+r.league:''),107,y+53,14,'#66798d');
         fill(648,y+28,393,17,'#e5ebf1');
-        const bar=393*Math.min(10,Math.max(0,r.score))/10;
-        const grad=ctx.createLinearGradient(648,0,1041,0);grad.addColorStop(0,rc);grad.addColorStop(1,rc+'cc');fill(648,y+28,bar,17,grad);
-        fill(1080,y+17,126,39,rc);txt(r.score.toFixed(2),1143,y+45,24,'#ffffff',900,'center');
+        const bar = 393 * Math.min(10,Math.max(0,r.score)) / 10;
+        const grad = ctx.createLinearGradient(648,0,1041,0);
+        grad.addColorStop(0,rc);grad.addColorStop(1,rc+'cc');
+        fill(648,y+28,bar,17,grad);
+        fill(1080,y+17,126,39,rc);
+        txt(r.score.toFixed(2),1143,y+45,24,'#ffffff',900,'center');
       });
-      const footY=y0+rows.length*rowH+18;
-      line(42,footY-9,1238,footY-9,'#2879fe',3);
-      txt('Source: RotoGrinders analysis of 124 coaches and 372 image assessments.',42,footY+20,16,'#4c6175',600);
-      txt('Each coach\'s overall score is averaged across three photographs. Scores are not measures of coaching ability.',42,footY+45,13,'#627487');
-      // Four-sided outside border for standalone download
-      ctx.strokeStyle='#cdd9e5';ctx.lineWidth=2;ctx.strokeRect(1,1,W-2,H-2);
+
+      line(42,footY-9,1238,footY-9,accent,3);
+      txt(`Source: RotoGrinders analysis of ${coachCount} ${isOverall?'coaches':tab+' coaches'} and ${imagesAssessed} image assessments.`,
+        42,footY+20,16,'#4c6175',600);
+      txt('Each score averages three photographs. Scores are not measures of coaching ability.',
+        42,footY+45,13,'#627487');
+      ctx.strokeStyle='#cdd9e5';ctx.lineWidth=2;
+      ctx.strokeRect(1,1,W-2,H-2);
+
       const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
-      if(!blob)throw new Error('PNG export could not be created');
+      if (!blob) throw new Error('PNG export could not be created');
       const url=URL.createObjectURL(blob);
       const link=document.createElement('a');
-      link.href=url;link.download='rotogrinders-top-10-coaches-'+tab.toLowerCase()+'.png';
+      link.href=url;
+      link.download='rotogrinders-top-10-coaches-'+tab.toLowerCase()+'.png';
       document.body.append(link);link.click();link.remove();
       setTimeout(()=>URL.revokeObjectURL(url),60000);
-    } catch (error) {
+    } catch(error) {
       console.error('Ranking PNG export failed',error);
-      label.textContent = 'Could not download';
+      label.textContent='Could not download';
       setTimeout(()=>{label.textContent=previous},2600);
     } finally {
       button.disabled=false;
